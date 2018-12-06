@@ -1,0 +1,24 @@
+Các loại gói tin và cấu trúc của chúng trong giao thức:
+1. Gói tin xác nhận: Type(4byte)=1
+2. Gói tin danh sách file: Type(4byte)=2;number_files(8byte);number_files cặp (filename(8byte)+file_size(8byte))
+3. Gói tin dữ liệu: Type(4byte)=3;data(8188 byte)( vì tạm để băng thông tối đa là 8192 byte)
+4. Gói tin danh sách client: Type(4byte)=4;number_clients(8byte);có number_clinets cặp (ip_addr(8byte);port_number(8byte))
+5. Gói tin yêu cầu download file: Type(4byte)=5;file_name(8byte)
+6. Gói tin yeu cầu danh sách client: Type(4byte)=6;file_name(8byte).
+
+*,Mô tả hoạt động chung:
+B1: SErver bật, chờ kết nối đến từ client.
+B2:Client kết nối đến server, sau đó server trả lại gói tin xác nhận( gói tin 1) sau khi kết nối thành công
+B2: Sau khi client nhận được gói tin kết nối thì sẽ gửi gói tin danh sách file cho server(gói tin 2). Server nhận được gói tin danh sách file thành công thì sẽ gửi lại gói tin xác nhận cho client
+(gói tin 1). Sau đó server sẽ lưu lại danh sách các file ứng với từng client.
+B3: Các client sẽ ở trạng thái chờ yêu cầu của người dùng sau khi nhận được xác nhận đã nhận danh sách file thánh công từ server.
+B4: Người dùng nhập tên file cần download tại 1 client bất kì. CLient lúc này sẽ gửi gói tin yêu cầu danh sách file (gói tin 6) cho server.Server nhận được gói tin yêu cầu danh sách file(gói tin 4) 
+sẽ gửi gói tin danh client cho client (gói tin 4). Sau khi nhận được gói tin danh sách client (gói tin 4) thì client gửi lại gói tin xác nhận cho server (gói tin 1)
+B5: Client sau khi nhận được danh sách client chứa file thì sẽ kết nối đến client đầu tiên chứa file trong danh sách. Client kia sau khi kết nối thành công sẽ gửi lại gói tin xác nhận cho client kết
+nối đến (gói tin 1)
+B6: Sau khi đã nhận được xác nhận kết nối thành công thì client muốn download sẽ gửi gói tin yêu cầu download file (gói tin 5). Client chứa file sau khi nhận được gói tin yêu cầu download sẽ bắt đầu 
+đọc file và gửi dần từng gói tin dữ liệu (gói tin 3) cho client yêu cầu cho đến khi hết dữ liệu của file đó.
+B7: Sau khi client yêu cầu đếm dữ liệu nhận được có độ lớn bằng kích thước file thì rồi thì sẽ gửi lại gói tin xác nhận (gói tin 1) cho bên client gửi. Sau đó ngắt kết nối.
+
+Lưu ý: Tạm thời sẽ chưa đặt thời gian chờ kết nối, thời gian chờ gói tin xác nhận tại các bước, mà sẽ duy trì kết nối của client và server cho đến khi người dùng yêu cầu ngắt kết nối và coi 
+là các client khi yêu cầu kết nối với nhau là sẽ luôn thành công, các gói tin gửi nhận không có mất mát và luôn thuận lợi. 
