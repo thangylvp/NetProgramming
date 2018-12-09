@@ -1,10 +1,10 @@
 Các loại gói tin và cấu trúc của chúng trong giao thức:
 1. Gói tin xác nhận: Type(4byte)=1
-2. Gói tin danh sách file: Type(4byte)=2;number_files(8byte);number_files bộ (filenamelength(8byte)+filename(filenamelength byte)+file_size(8byte))
-3. Gói tin dữ liệu: Type(4byte)=3;data(8188 byte)( vì tạm để băng thông tối đa là 8192 byte)
+2. Gói tin danh sách file: Type(4byte)=2;number_files(8byte);number_files bộ (filenamelength(4byte)+filename(filenamelength byte)+file_size(8byte))
+3. Gói tin dữ liệu: Type(4byte)=3; data(8188 byte)( vì tạm để băng thông tối đa là 8192 byte)
 4. Gói tin danh sách client: Type(4byte)=4;file_size(8byte);number_clients(8byte);có number_clinets cặp (ip_addr(8byte);port_number(8byte))
-5. Gói tin yêu cầu download file: Type(4byte)=5;file_name(8byte)
-6. Gói tin yêu cầu danh sách client: Type(4byte)=6;file_name(8byte).
+5. Gói tin yêu cầu download file: Type(4byte)=5;filenamelength(4byte);file_name(filenamelength byte)
+6. Gói tin yêu cầu danh sách client: Type(4byte)=6;filenamelength(4byte);file_name(filenamelength byte).
 
 *,Mô tả hoạt động chung:
 B1: SErver bật, chờ kết nối đến từ client.
