@@ -18,15 +18,19 @@
 pthread_mutex_t	mutex_ndone = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t	mutex_n_sending = PTHREAD_MUTEX_INITIALIZER;
 int listPort[100];
-
+void sendAccept(int *fd) {
+    int message = 1;
+    write(*fd, &message, sizeof(message));
+}
 void * sendFile(void * file_description) {
     int fd = *((int *) file_description);
     int n_bytes;
     int message;
 
-    message = 1;
-    write(fd, &message, sizeof(message));
-    
+    // message = 1;
+    // write(fd, &message, sizeof(message));
+
+    sendAccept(&fd);   
     LOOP:
 
     
