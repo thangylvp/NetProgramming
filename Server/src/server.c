@@ -17,18 +17,27 @@
 
 pthread_mutex_t	mutex_ndone = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t	mutex_n_sending = PTHREAD_MUTEX_INITIALIZER;
+int listPort[100];
 
 void * sendFile(void * file_description) {
     int fd = *((int *) file_description);
     int n_bytes;
     int message;
 
+    message = 1;
+    write(fd, &message, sizeof(message));
+    
     LOOP:
+
+    
+
     n_bytes = read(fd, &message, sizeof(int));
     
     if (message == -1) {
-        printf("* Disconnect client ID: %d.\n", fd);
+        printf("* Disconnect client port: %d.\n", listPort[fd]);
         return NULL;
+    }  else {
+        printf("Message : %d\n", message);
     }
 
     
@@ -42,7 +51,7 @@ void * sendFile(void * file_description) {
 int main(int argc, char **argv) {
     struct sockaddr_in server, client;
     int serverfd = socket(AF_INET, SOCK_STREAM, 0);
-
+    char str[100];
     bzero(&server, sizeof(server));
     server.sin_family = AF_INET;
     server.sin_port = htons(PORT);
@@ -57,8 +66,11 @@ int main(int argc, char **argv) {
         iptr = malloc(sizeof(int));
         clisize= sizeof(client);
         *iptr = accept(serverfd, (struct sockaddr*) &client, &clisize);
+        printf("\nREQUEST FROM %s PORT %d \n",inet_ntop(AF_INET,&client.sin_addr,str,sizeof(str)),htons(client.sin_port));
         pthread_create(&tid, NULL, &sendFile, (void *) iptr);
-        printf("* New client. ID:  %d\n", *iptr);
+        listPort[*iptr] = htons(client.sin_port);
+        
+
     }
     
     return 0;
