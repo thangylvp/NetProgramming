@@ -1,0 +1,4 @@
+Code của Thành:
+Folder BTLLTM coi là client 1 có chờ kết nối đến nó ở cổng 10000
+Folder BTLLTM coi là client 2 có chờ kết nối đến nó ở cổng 10001
+Khi chạy thì nhớ mở phần src và chỉnh sửa các chỗ có chứ biến đường dẫn ở trong file BTLLTM.java và BTLLTM@.java nhé.

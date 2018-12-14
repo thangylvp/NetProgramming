@@ -1,12 +1,13 @@
 Các loại gói tin và cấu trúc của chúng trong giao thức:
-1. Gói tin xác nhận: Type(1byte)=1
-2. Gói tin danh sách file: Type(1byte)=2;port(4byte)(cổng mà client sẽ lắng nghe để chờ kết nối đến từ client khác);number_files(8byte);number_files bộ (filenamelength(4byte)+filename(filenamelength
+1. Gói tin xác nhận: Type(4byte)=1
+2. Gói tin danh sách file: Type(4byte)=2;port(4byte)(cổng mà client sẽ lắng nghe để chờ kết nối đến từ client khác);number_files(8byte);number_files bộ (filenamelength(4byte)+filename(filenamelength
  byte)+file_size(8byte))
-3. Gói tin thông báo dữ liệu: Type(1byte)=3(thông báo các gói tin tiếp theo sẽ là gói tin dữ liệu cho đến khi mà download file thành công) 
+3. Gói tin thông báo dữ liệu: Type(4byte)=3(thông báo các gói tin tiếp theo sẽ là gói tin dữ liệu cho đến khi mà download file thành công) 
    Gói tin dữ liệu: (Không có trường Type nhưng chỉ được gửi sau gói tin thông báo dữ liệu và sẽ gửi cho đến khi đã đọc hết file cần download) data(8192 byte)( vì tạm để băng thông tối đa là 8192 byte)
-4. Gói tin danh sách client: Type(1byte)=4;file_size(8byte);number_clients(8byte);có number_clients cặp (ip_addr(4byte);port_number(8byte))
-5. Gói tin yêu cầu download file: Type(1byte)=5;filenamelength(4byte);file_name(filenamelength byte)
-6. Gói tin yêu cầu danh sách client: Type(1byte)=6;filenamelength(4byte);file_name(filenamelength byte).
+4. Gói tin danh sách client: Type(4byte)=4;file_size(8byte);number_clients(4byte);có number_clients cặp (ip_addr(4byte);port_number(8byte))
+5. Gói tin yêu cầu download file: Type(4byte)=5;filenamelength(4byte);file_name(filenamelength byte)
+6. Gói tin yêu cầu danh sách client: Type(4byte)=6;filenamelength(4byte);file_name(filenamelength byte).
+7. Gói tin báo lỗi: Type(4byte)=7;errorCode(4byte)(errorCode:1->không tìm thấy file;errorCode:2->file download bị lỗi)
 
 *,Mô tả hoạt động chung:
 B1: Server bật, chờ kết nối đến từ client.
@@ -15,11 +16,12 @@ B2: Sau khi client nhận được gói tin kết nối thì sẽ gửi gói tin
 (gói tin 1). Sau đó server sẽ lưu lại danh sách các file ứng với từng client.
 B3: Các client sẽ ở trạng thái chờ yêu cầu của người dùng sau khi nhận được xác nhận đã nhận danh sách file thánh công từ server.
 B4: Người dùng nhập tên file cần download tại 1 client bất kì. CLient lúc này sẽ gửi gói tin yêu cầu danh sách file (gói tin 6) cho server.Server nhận được gói tin yêu cầu danh sách file(gói tin 4) 
-sẽ gửi gói tin danh client cho client (gói tin 4). Sau khi nhận được gói tin danh sách client (gói tin 4) thì client gửi lại gói tin xác nhận cho server (gói tin 1)
+sẽ gửi gói tin danh client cho client (gói tin 4). Sau khi nhận được gói tin danh sách client (gói tin 4) thì client gửi lại gói tin xác nhận cho server (gói tin 1).Nếu file không tồn tại thì server
+gửi cho bên client gói tin báo lỗi (gói tin 7 với errorCode=1)
 B5: Client sau khi nhận được danh sách client chứa file thì sẽ kết nối đến client đầu tiên chứa file trong danh sách. Client kia sau khi kết nối thành công sẽ gửi lại gói tin xác nhận cho client kết
 nối đến (gói tin 1)
 B6: Sau khi đã nhận được xác nhận kết nối thành công thì client muốn download sẽ gửi gói tin yêu cầu download file (gói tin 5). Client chứa file sau khi nhận được gói tin yêu cầu download sẽ bắt đầu 
-đọc file và gửi dần từng gói tin dữ liệu (gói tin 3) cho client yêu cầu cho đến khi hết dữ liệu của file đó.
+đọc file và gửi dần từng gói tin dữ liệu (gói tin 3) cho client yêu cầu cho đến khi hết dữ liệu của file đó.Nếu file không tồn tại thì gửi gói tin báo lỗi(gói tin 7 với errorCode=1) cho bên yêu cầu.
 B7: Sau khi client yêu cầu đếm dữ liệu nhận được có độ lớn bằng kích thước file thì rồi thì sẽ gửi lại gói tin xác nhận (gói tin 1) cho bên client gửi. Sau đó ngắt kết nối.
 
 Lưu ý: Tạm thời sẽ chưa đặt thời gian chờ kết nối, thời gian chờ gói tin xác nhận tại các bước, mà sẽ duy trì kết nối của client và server cho đến khi người dùng yêu cầu ngắt kết nối và coi 
