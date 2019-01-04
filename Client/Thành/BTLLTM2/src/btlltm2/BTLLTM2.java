@@ -67,6 +67,7 @@ class ConnectThread extends Thread {
                     do {
                         System.out.println("Enter file name to download or 'quit' to close the process:");
                         Scanner sc = new Scanner(System.in);
+                        long start = System.currentTimeMillis();
                         fileName = sc.nextLine();
                         if (!fileName.equalsIgnoreCase("quit")) {
                             ArrayList<Long> ports = new ArrayList<Long>();
@@ -80,6 +81,7 @@ class ConnectThread extends Thread {
                                 byte[] intBuff = new byte[4];
                                 in.read(intBuff, 0, 4);
                                 int numberClients = ConvertIntoBytes.bytesToInt(intBuff);
+                                System.out.println("List client:");
                                 for (int i = 0; i < numberClients; i++) {
                                     byte[] byteIpAddr = new byte[4];
                                     byte[] byte_port = new byte[8];
@@ -89,7 +91,8 @@ class ConnectThread extends Thread {
                                     InetAddress ip_addr = InetAddress.getByAddress(byteIpAddr);
                                     ports.add(port);
                                     ipAddrs.add(ip_addr);
-
+                                    System.out.println("IP address: " + ip_addr.toString());
+                                    System.out.println("port:"+port);
                                 }
                                 for (int i = 0; i < ipAddrs.size(); i++) {
                                     long port = ports.get(i);
@@ -104,6 +107,9 @@ class ConnectThread extends Thread {
                                         if (type2 == 3) {
                                             boolean flag = SubFunction.recvFile(inDownload,path + "/" + fileName, file_size, BUFSIZE);
                                             if(flag){
+                                                long end = System.currentTimeMillis();
+                                                long time = end - start;
+                                                System.out.println("time for downloading file:"+time);
                                                 type2 = 1;
                                                 outDownload.writeInt(type2);
 
@@ -129,6 +135,7 @@ class ConnectThread extends Thread {
                             break;
                         }
                     } while (!fileName.equalsIgnoreCase("quit"));
+                    System.out.println("Conection thread closed!");
                     break;
                 } else {
 
@@ -169,9 +176,9 @@ class ListenThread extends Thread {
                 type = in.readInt();
                 if (type == 5) {
                     String fileName = in.readUTF();
-                    File dir = new File("/home/damthanh/NetBeansProjects/BTLLTM2/listFiles");
-                    File[] listFile = dir.listFiles();
-                    File file = new File("/home/damthanh/NetBeansProjects/BTLLTM2/listFiles/"+fileName);
+                    String path = ("/home/damthanh/NetBeansProjects/BTLLTM2/listFiles/" + fileName);
+//                    System.out.println("path:"+path);
+                    File file = new File(path);
                     
                     if (file.exists()) {
                         SubFunction.sendFile(out, file, BUFSIZE);

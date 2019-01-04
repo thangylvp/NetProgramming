@@ -41,24 +41,24 @@ void recivelistFile(int *fd) {
     long fileSize;
     
     read(*fd,&port,sizeof(port));
-    printf("port: %ld\n",port);
-    struct sockaddr_in addr;
-	socklen_t addr_size = sizeof(struct sockaddr_in);
-	int *res = getpeername(*fd, (struct sockaddr *)&addr, &addr_size);
+    printf("listening port on client: %ld\n",port);
+    // struct sockaddr_in addr;
+	// socklen_t addr_size = sizeof(struct sockaddr_in);
+	// int *res = getpeername(*fd, (struct sockaddr *)&addr, &addr_size);
     int flag = 1;
     for(int i=0;i<numberClient;i++){
         if(client[i].port==port){
             n_bytes = read(*fd, &nFile, sizeof(int));
-            printf("Num of file : %d\n", nFile);
+            printf("Number of file : %d\n", nFile);
             client[i].numberFile=nFile;
             for (int j = 0; j < nFile; j++) {
                 int fileNameLength;
                 read(*fd,&fileNameLength,sizeof(fileNameLength));
                 n_bytes = read(*fd, &client[i].listFile[j], fileNameLength);
                 client[i].listFile[j][n_bytes]=0;
-                printf("name %d, %d, %s\n", i, n_bytes, client[i].listFile[j]);
+                printf("filename: %s\n", client[i].listFile[j]);
                 n_bytes = read(*fd, &fileSize, sizeof(fileSize));
-                printf("len %d, %ld\n", n_bytes, fileSize);
+                printf("fileLength: %ld\n", fileSize);
                 
                 client[i].listFileSize[j]=fileSize;
                 //n_bytes = read(fd, fileName, fileLen);
@@ -83,7 +83,7 @@ void recivelistFile(int *fd) {
         client[numberClient-1].listFile[i][n_bytes]=0;
         printf("name %d, %d, %s\n", i, n_bytes, client[numberClient-1].listFile[i]);
         n_bytes = read(*fd, &fileSize, sizeof(fileSize));
-        printf("len %d, %ld\n", n_bytes, fileSize);
+        printf("fileLength %ld\n", fileSize);
         
         client[numberClient-1].listFileSize[i]=fileSize;
         //n_bytes = read(fd, fileName, fileLen);
@@ -105,11 +105,11 @@ void recvRequest(int *fd){
     read(*fd,&fileNameLength,sizeof(fileNameLength));
     read(*fd,&fileName,fileNameLength);
     fileName[fileNameLength]=0;
-    printf("file name length: $ld",fileNameLength);
-    printf("file name: %s\n",fileName);
+    // printf("file name length: %d",fileNameLength);
+    printf("client want to down load file: %s\n",fileName);
     for(int i=0;i<numberClient;i++){
         for(int j=0;j<client[i].numberFile;j++){
-            printf("file in list: %s\n",client[i].listFile[j]);
+            // printf("file in list: %s\n",client[i].listFile[j]);
             if(strcmp(fileName,client[i].listFile[j])==0){
                 numberRightClient++;
                 listIP[numberRightClient-1]=client[i].IpAddr;
@@ -147,7 +147,7 @@ void * process(void * file_description) {
    
   
     while(n_bytes = read(fd, &message, sizeof(int))>0){
-    printf("new message %d\n", message);
+    printf("new message, type = %d\n", message);
     if (message == -1 || n_bytes==0) {
         printf("* Disconnect client \n");
         return NULL;
@@ -159,10 +159,10 @@ void * process(void * file_description) {
         sendAccept(&fd);
     } else 
     if (message == 6){
-        printf("Message : %d\n", message);
+        // printf("Message : %d\n", message);
         recvRequest(&fd);
     } else {
-        printf("Message : %d\n", message);
+        // printf("Message : %d\n", message);
     }
     }
 
