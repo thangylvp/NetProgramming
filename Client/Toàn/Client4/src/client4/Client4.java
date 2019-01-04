@@ -47,7 +47,7 @@ class ConnectThread extends Thread {
     private DataOutputStream out;
     private int port;
     private int type;
-    private String path = "C:\\Users\\banhb\\Desktop\\LTM\\NetProgramming\\Client\\Thành\\BTLLTM2\\listFiles";
+    private String path = "C:\\Users\\banhb\\Desktop\\LTM\\NetProgramming\\Client\\Toàn\\Client4\\listFiles";
     
     public ConnectThread(int port) {
         this.port = port;
@@ -172,9 +172,9 @@ class ListenThread extends Thread {
                 type = in.readInt();
                 if (type == 5) {
                     String fileName = in.readUTF();
-                    File dir = new File("/home/damthanh/NetBeansProjects/BTLLTM2/listFiles");
+                    File dir = new File("/home/tranquangtoan/NetBeansProjects/Client4/listFiles");
                     File[] listFile = dir.listFiles();
-                    File file = new File("/home/damthanh/NetBeansProjects/BTLLTM2/listFiles/"+fileName);
+                    File file = new File("/home/tranquangtoan/NetBeansProjects/Client4/listFiles/"+fileName);
                     
                     if (file.exists()) {
                         SubFunction.sendFile(out, file, BUFSIZE);
