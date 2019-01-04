@@ -1,0 +1,29 @@
+1. Kết nối tới MySQL server bằng cổng 3306 bằng các cách có thể ?
+
+2. Tạo người dùng "demo" mật khẩu "abc123" chỉ có thể truy cập tới MySQL server tại chính máy tính cài MySQL server và phân quyền người dùng này có quyền chỉ có quyền đọc và sửa đổi dũ liệu trên tất cả cơ sở dữ liệu.
+
+3. Tạo view customer_desc đưa ra các thông tin của khách hàng bao gồm tên khách hàng, số điện thoại, tên thành phố , tên đất nước.
+
+4. Tạo procedure displayActorInfo nhận actor_id là tham số:
++ Nếu 0 truyền cho actor_id trả lại thông tin tất cả actor.
++ Nếu actor_id được chỉ rõ: trả lại thông tin diễn viên có actor_id là giá trị truyền vào
+
+5. Tạo bảng "film_change" gồm 3 trường:
++  film_id kiểu int : định danh của film
++  title_old kiểu text : giá trị trước khi thay đổi
++  title_new: giá trị sau khi thay đổi
+Viết trigger thực hiện công việc sau: Với mỗi thay đổi với trường title của bảng film luu lại thông tin thay đổi vào bảng film_change đã tạo ở trên.
+
+6. Lấy thông tin về các bộ phim mà phần mô tả của chúng bắt đầu bằng cụm từ "A Astounduing".
+Kiểm tra lại index đã sử dụng và số lượng bản ghi được duyệt
+Tối ưu hóa truy vấn bằng cách thêm prefix_index vào cột description? Thực hiện lại truy vấn và cho biết số lượng bản ghi được duyệt trả lại kết quả.
+
+7. Thực thi truy vấn lấy thông tin về film và mã số kho chứa film đó. Sử dụng phép nối thứ tự bắt buộc (stright_join) đánh giá phương án thực thi tối ưu.
+
+8. Xuất dữ liệu từ bảng "customer" ra file text sử dụng câu lệnh SELECT, các trường ngăn cách nhau bới dấu phẩy, được bao bởi dấu ngoặc kép
+
+9. + Start MySQL server với chế độ nào để mysql lưu lại tất cả các thay đổi dữ liệu vào file log trong CSDL
++ Sau khi start thực hiện một số câu lênh thay đổi dữ liệu CSDL Sakila
++ Kiểm tra nội dung file log bằng cách chuyển nội dung đã thay đổi sang file text
+
+10. Viêt câu lệnh cấu hình Slave với các đặc điểm của Master như sau: địa chỉ IP: localhost; user:slave_demo; pass: 123456 ;log file: mysql-bin.000002;  log pos:222
