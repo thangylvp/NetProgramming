@@ -181,7 +181,7 @@ int main(int argc, char **argv) {
     bzero(&server, sizeof(server));
     server.sin_family = AF_INET;
     server.sin_port = htons(PORT);
-    server.sin_addr.s_addr = htonl(INADDR_ANY);
+    server.sin_addr.s_addr = inet_addr("172.20.10.11");
     bind(serverfd, (struct sockaddr*) &server, sizeof(server));
     listen(serverfd, 100);
 

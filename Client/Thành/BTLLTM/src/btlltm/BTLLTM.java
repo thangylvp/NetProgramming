@@ -20,7 +20,8 @@ public class BTLLTM {
         connThread.start();
 
         try {
-            ServerSocket servSocket = new ServerSocket(port, 1);
+            InetAddress addr = InetAddress.getByName("172.20.10.11");
+            ServerSocket servSocket = new ServerSocket(port, 1,addr);
             System.out.println("Listening for connections on port "
                     + servSocket.getLocalPort());
             while (true) {
@@ -53,7 +54,10 @@ class ConnectThread extends Thread {
     public void run() {
         byte[] socketBuffer = new byte[BUFSIZE];
         try {
-            Socket socket = new Socket("localhost", 1998);
+            InetAddress addr = InetAddress.getByName("172.20.10.2");
+            System.out.println("addr:"+addr);
+            Socket socket = new Socket(addr, 6789);
+//            System.out.println("socket: "+ socket);
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
             while (true) {
